@@ -11,15 +11,15 @@ class Olx(scrapy.Spider):
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36'
     }
 
+    def __init__(self):
+        with open('result.csv','w') as csv_file:
+            csv_file.write('title, description,location,features,date,price\n')
+
     def start_requests(self):
-        pass
-        # yield scrapy.Request(url=self.url + '&page=0', headers=self.headers, callback=self.parse)
+        yield scrapy.Request(url=self.url + '&page=0', headers=self.headers, callback=self.parse)
 
     def parse(self,res):
-        data = ''
-        with open('res.json','r', encoding="utf-8") as json_file:
-            for  line in json_file.read():
-                data += line
+        data = res.text
         data = json.loads(data)
         
         for offer in data['data']:
@@ -39,9 +39,9 @@ class Olx(scrapy.Spider):
                 writer.writerow(items)
 
 # Run Scraper
-# process = CrawlerProcess()
-# process.crawl(Olx)
-# process.start()
+process = CrawlerProcess()
+process.crawl(Olx)
+process.start()
 
 # Debug
-Olx.parse(Olx,'')
+# Olx.parse(Olx,'')
