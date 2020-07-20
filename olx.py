@@ -1,5 +1,6 @@
 import scrapy
 from scrapy.crawler import CrawlerProcess
+import json
 
 class Olx(scrapy.Spider):
     name = 'olx'
@@ -10,13 +11,33 @@ class Olx(scrapy.Spider):
     }
 
     def start_requests(self):
-        yield scrapy.Request(url=self.url + '&page=0', headers=self.headers, callback=self.parse)
+        pass
+        # yield scrapy.Request(url=self.url + '&page=0', headers=self.headers, callback=self.parse)
 
     def parse(self,res):
-        print(res.text)
+        data = ''
+        with open('res.json','r', encoding="utf-8") as json_file:
+            for  line in json_file.read():
+                data += line
+        data = json.loads(data)
+        
+        for offer in data['data']:
+            items = {
+                'title':offer['title'],
+                'description':offer['description'],
+                'location': offer['locations_resolved']['COUNTRY_name']+ ', ' +
+                            offer['locations_resolved']['ADMIN_LEVEL_1_name']+ ', ' +
+                            offer['locations_resolved']['ADMIN_LEVEL_3_name'],
+                'features': offer['main_info'],
+                'date': offer['display_date'],
+                'price': offer['price']['value']['display']
+            }
+        print(json.dumps(items, indent=2))
 
 # Run Scraper
+# process = CrawlerProcess()
+# process.crawl(Olx)
+# process.start()
 
-process = CrawlerProcess()
-process.crawl(Olx)
-process.start()
+# Debug
+Olx.parse(Olx,'')
