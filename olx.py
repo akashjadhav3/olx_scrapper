@@ -1,6 +1,7 @@
 import scrapy
 from scrapy.crawler import CrawlerProcess
 import json
+import csv
 
 class Olx(scrapy.Spider):
     name = 'olx'
@@ -32,7 +33,10 @@ class Olx(scrapy.Spider):
                 'date': offer['display_date'],
                 'price': offer['price']['value']['display']
             }
-        print(json.dumps(items, indent=2))
+
+            with open('result.csv', 'a') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames=items.keys())
+                writer.writerow(items)
 
 # Run Scraper
 # process = CrawlerProcess()
