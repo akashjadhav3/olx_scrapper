@@ -25,7 +25,7 @@ class Olx(scrapy.Spider):
         for offer in data['data']:
             items = {
                 'title':offer['title'],
-                'description':offer['description'],
+                'description':offer['description'].replace('\n',' '),
                 'location': offer['locations_resolved']['COUNTRY_name']+ ', ' +
                             offer['locations_resolved']['ADMIN_LEVEL_1_name']+ ', ' +
                             offer['locations_resolved']['ADMIN_LEVEL_3_name'],
