@@ -16,7 +16,8 @@ class Olx(scrapy.Spider):
             csv_file.write('title, description,location,features,date,price\n')
 
     def start_requests(self):
-        yield scrapy.Request(url=self.url + '&page=0', headers=self.headers, callback=self.parse)
+        for page in range(0,5):
+            yield scrapy.Request(url=self.url + '&page=' + str(page), headers=self.headers, callback=self.parse)
 
     def parse(self,res):
         data = res.text
